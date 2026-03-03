@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Errorfect - The Linguistic Autopsy</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* Background system (random logo + overlay) */
+    /* Background system: randomized Errorfect logo each load + legibility overlay */
     .bg-layer{
       position: fixed;
       inset: 0;
@@ -31,8 +32,8 @@
     }
 
     body {
-      font-family: 'Courier New', monospace;
-      background: transparent; /* allow bg-layer to show */
+      font-family: "Courier New", monospace;
+      background: transparent; /* allows bg-layer to show */
       color: #e0e0e0;
       line-height: 1.6;
       overflow-x: hidden;
@@ -48,7 +49,7 @@
       justify-content: center;
       align-items: center;
       padding: 2rem;
-      background: radial-gradient(circle at center, rgba(26,26,46,0.75) 0%, rgba(10,10,10,0.65) 100%);
+      background: radial-gradient(circle at center, rgba(26,26,46,0.72) 0%, rgba(10,10,10,0.62) 100%);
     }
 
     .glitch-container {
@@ -69,6 +70,571 @@
       color: #666;
       opacity: 0.3;
       text-decoration: line-through;
+      display: inline-block;
+      margin-right: 1rem;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.5rem);
+      color: #8892b0;
+      text-align: center;
+      margin-bottom: 3rem;
+      max-width: 980px;
+    }
+
+    .scroll-indicator {
+      font-size: 2rem;
+      animation: bounce 2s infinite;
+      color: #00f5ff;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #ff006e;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #ff006e, #00f5ff);
+    }
+
+    .reveal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 3rem;
+      margin: 3rem 0;
+    }
+
+    .reveal-card {
+      background: rgba(22,33,62,0.92);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid #ff006e33;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .reveal-card:hover {
+      transform: translateY(-5px);
+      border-color: #ff006e;
+      box-shadow: 0 10px 30px rgba(255, 0, 110, 0.2);
+    }
+
+    .word-reveal {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .masked-letter {
+      color: #ff006e;
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .revealed-word {
+      color: #00f5ff;
+      display: block;
+      font-size: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .mechanism {
+      color: #8892b0;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .field-notes {
+      background: linear-gradient(135deg, rgba(22,33,62,0.92) 0%, rgba(15,52,96,0.92) 100%);
+      padding: 3rem;
+      border-radius: 8px;
+      border-left: 4px solid #ff006e;
+      margin: 3rem 0;
+      backdrop-filter: blur(2px);
+    }
+
+    .field-notes p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: #ccd6f6;
+    }
+
+    .key-insight {
+      background: rgba(10,10,10,0.85);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 2px solid #00f5ff;
+      margin: 2rem 0;
+      font-size: 1.2rem;
+      color: #00f5ff;
+      text-align: center;
+      font-weight: bold;
+      backdrop-filter: blur(2px);
+    }
+
+    .surgical {
+      color: #ff006e;
+      font-style: italic;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.85rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #00f5ff55;
+      color: #00f5ff;
+      margin: 0.2rem 0.35rem 0 0;
+      background: rgba(0, 245, 255, 0.06);
+      white-space: nowrap;
+    }
+
+    .micro-protocol {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px dashed #00f5ff55;
+      background: rgba(0, 0, 0, 0.35);
+      color: #ccd6f6;
+      line-height: 1.7;
+    }
+
+    .micro-protocol strong { color: #00f5ff; }
+
+    .protocol-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .protocol-step {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid #00f5ff33;
+      border-radius: 10px;
+      padding: 1.25rem 1.25rem 1.1rem;
+      backdrop-filter: blur(2px);
+    }
+
+    .protocol-step h3 {
+      color: #00f5ff;
+      margin-bottom: 0.65rem;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .protocol-step p {
+      color: #ccd6f6;
+      margin-bottom: 0.75rem;
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .protocol-step .small {
+      color: #8892b0;
+      font-size: 0.95rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid #ff006e33;
+      color: #8892b0;
+    }
+
+    @media (max-width: 768px) {
+      .reveal-grid { grid-template-columns: 1fr; }
+      .protocol-grid { grid-template-columns: 1fr; }
+    }
+
+    .arrow {
+      display: inline-block;
+      color: #ff006e;
+      margin: 0 1rem;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background layers MUST be inside body -->
+  <div class="bg-layer" id="bgLayer"></div>
+  <div class="bg-overlay"></div>
+
+  <div class="hero">
+    <div class="glitch-container">
+      <div class="glitch">
+        <span class="word-mask">Perfect</span> ERRORFECT
+      </div>
+    </div>
+
+    <div class="subtitle">
+      Errorfect is a microscope for linguistic connotative and associative attachment; it disrupts language to reveal mechanisms hidden in vocabulary.
+      It’s a <span class="surgical">subjective cognitive probe</span>: you don’t “decode the word” — you expose what your mind attached to it, so you can choose again.
+      <br /><br />
+      The protocol escalates only as needed: start with the lightest disruption; stop at the first useful revelation.
+    </div>
+
+    <div class="scroll-indicator">↓</div>
+  </div>
+
+  <section>
+    <h2>The Discovery</h2>
+    <div class="field-notes">
+      <p>
+        We use words like <strong>perfect</strong>, <strong>normal</strong>, and <strong>control</strong> as if they describe reality. Often they don’t.
+        They behave more like <span class="surgical">cognitive operators</span>: they compress ambiguity, create ranking, and assign blame without announcing they’ve done it.
+      </p>
+      <p>
+        Errorfect doesn’t claim hidden etymology or objective lexical truth. It introduces a breakpoint in automatic meaning-loading.
+        The disruption makes your internal associations inspectable — personal, cultural, institutional, or pure noise.
+      </p>
+    </div>
+
+    <div class="key-insight">
+      The “mask” isn’t the truth; it’s what makes the mechanism socially wearable.
+    </div>
+  </section>
+
+  <section>
+    <h2>The Method</h2>
+    <div class="field-notes">
+      <p>
+        Errorfect runs as a sequential disruption protocol. Start at A. If A returns a useful revelation, stop.
+        If not, escalate to B; then C; then D. Escalation is not “more correct” — it is simply more invasive.
+      </p>
+
+      <div class="protocol-grid">
+        <div class="protocol-step">
+          <h3>A — Remove the first letter</h3>
+          <p>Orthographic disruption; interrupts automatic lexical chunking.</p>
+          <p class="small">Stop if the reveal exposes a hidden standard, sorting rule, threat coding, identity fusion, or an unstated metric.</p>
+        </div>
+
+        <div class="protocol-step">
+          <h3>B — Remove the first syllable</h3>
+          <p>Phonological disruption; re-parses sound and emphasis and often surfaces a different association layer than A.</p>
+          <p class="small">Stop if meaning stabilizes into a mechanism, not just a clever fragment.</p>
+        </div>
+
+        <div class="protocol-step">
+          <h3>C — Remove the first syllabary unit</h3>
+          <p>Onset-level disruption; interferes earlier in recognition, before the word fully “lands.”</p>
+          <p class="small">Use when A and B produce only noise or coincidence.</p>
+        </div>
+
+        <div class="protocol-step">
+          <h3>D — Remove the first prefix</h3>
+          <p>Morphological disruption; removes semantic operators (negation, intensifiers, directionality) that preload interpretation.</p>
+          <p class="small">Use only when the prefix is real and the base form meaningfully changes the claim.</p>
+        </div>
+      </div>
+
+      <div class="key-insight">
+        Stop at first useful revelation; escalation is optional — not a requirement.
+      </div>
+
+      <p style="margin-top: 1.5rem;">
+        Multilingual reality: this method is not constrained to one language. Hybrid cognition (English/Spanish, etc.) is normal.
+        It also means some fragments can produce major meaning that a practitioner may misread or miss because multilingual association is doing the work.
+        Label cross-language “hits” as <span class="surgical">associative amplification</span>; verify the mechanism in the original context before you treat it as stable.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>The Autopsy</h2>
+    <div class="reveal-grid">
+      <div class="reveal-card">
+        <div class="word-reveal">
+          <span class="masked-letter">P</span>erfect
+        </div>
+        <div class="revealed-word">
+          <span class="arrow">→</span> Er(ror)fect
+        </div>
+        <div class="mechanism">
+          “Perfect” smuggles in a hidden standard; then it quietly charges interest when you can’t pay it.
+          Seen cleanly: perfectionism is an <strong>error-producing loop</strong> — not excellence.
+        </div>
+      </div>
+
+      <div class="reveal-card">
+        <div class="word-reveal">
+          <span class="masked-letter">N</span>ormal
+        </div>
+        <div class="revealed-word">
+          <span class="arrow">→</span> Or Mal (or bad)
+        </div>
+        <div class="mechanism">
+          “Normal” manufactures a center and then declares the edges defective.
+          Mechanism: <strong>social comparison + exclusion</strong>. It isn’t a measurement term; it’s a sorting term.
+        </div>
+      </div>
+
+      <div class="reveal-card">
+        <div class="word-reveal">
+          <span class="masked-letter">C</span>ontrol
+        </div>
+        <div class="revealed-word">
+          <span class="arrow">→</span> On Trol(l)
+        </div>
+        <div class="mechanism">
+          “Control” implies stable command over unstable systems; reality laughs and you pay the anxiety tax.
+          Mechanism: <strong>threat response management</strong> disguised as mastery.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Use Cases: Mental, Personal, Therapeutic</h2>
+
+    <div class="field-notes">
+      <p>
+        Errorfect is a repeatable language move for metacognitive inspection. It is not a diagnosis tool and not a substitute for care.
+        It is a way to interrupt automatic connotative loading so you can inspect associations, reframe the claim, and regain choice.
+      </p>
+
+      <div class="key-insight">
+        After any reveal, ask:
+        <br />1) What hidden standard is being assumed?
+        <br />2) Who authored that standard — me, culture, an institution, fear?
+        <br />3) Do I consent to operating under it right now?
+      </div>
+
+      <p>
+        Clinically adjacent terms (standard meanings): <strong>cognitive reframing</strong> (CBT),
+        <strong>cognitive defusion</strong> (ACT),
+        <strong>externalization</strong> (narrative approaches),
+        <strong>shame resilience</strong>,
+        <strong>locus-of-control calibration</strong>.
+      </p>
+    </div>
+
+    <div class="reveal-grid">
+      <div class="reveal-card">
+        <div class="word-reveal" style="font-size: 1.6rem;">Perfectionism reversal</div>
+        <div class="mechanism">
+          <span class="tag">Defusion</span>
+          <span class="tag">Reframe</span>
+          <span class="tag">Shame interrupt</span>
+          <div class="micro-protocol">
+            <strong>When it hits:</strong> “This must be perfect.”<br />
+            <strong>Run A:</strong> Perfect → Errorfect. Stop if it lands.<br />
+            <strong>Translate:</strong> “A hidden standard is attacking me.”<br />
+            <strong>Replace target:</strong> “functional,” “clear,” “safe,” “version 1,” “good-enough-for-now.”<br />
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-card">
+        <div class="word-reveal" style="font-size: 1.6rem;">Norm pressure detox</div>
+        <div class="mechanism">
+          <span class="tag">Sorting language</span>
+          <span class="tag">Metric demand</span>
+          <span class="tag">Agency restore</span>
+          <div class="micro-protocol">
+            <strong>When it hits:</strong> “Be normal.” / “That’s not normal.”<br />
+            <strong>Run A:</strong> Normal → ormal. If noise, escalate to B. Stop at first real mechanism.<br />
+            <strong>Ask:</strong> “Normal for whom, in what context, by what metric?”<br />
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-card">
+        <div class="word-reveal" style="font-size: 1.6rem;">Control-anxiety calibration</div>
+        <div class="mechanism">
+          <span class="tag">Threat response</span>
+          <span class="tag">One lever</span>
+          <span class="tag">Uncertainty tolerance</span>
+          <div class="micro-protocol">
+            <strong>When it hits:</strong> “I must control this.”<br />
+            <strong>Run A:</strong> Control → ontrol (or your chosen reveal). Escalate only if needed.<br />
+            <strong>Swap:</strong> “control” → “influence,” then identify one lever you can pull now; release the rest.<br />
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-card">
+        <div class="word-reveal" style="font-size: 1.6rem;">Prefix operator stripping (D)</div>
+        <div class="mechanism">
+          <span class="tag">Operator removal</span>
+          <span class="tag">Claim clarity</span>
+          <span class="tag">Mechanism exposure</span>
+          <div class="micro-protocol">
+            <strong>Use D when:</strong> a real prefix is present and semantically active (un-, dis-, non-, re-, pre-, over-, under-, hyper-, etc.).<br />
+            <strong>Move:</strong> remove the prefix; re-read the base claim; check what changed and why.<br />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="key-insight">
+      Errorfect converts “authority-flavored language” into claims that must show their units.
+    </div>
+
+    <div class="field-notes">
+      <p>
+        Some words reveal nothing. That absence is data. It means there may be no mechanism, no controversy, or no potency in your network for that token.
+        Some words reveal too much; that overgeneration is also data.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>The Implications</h2>
+    <div class="field-notes">
+      <p>
+        When someone says “perfection is here,” they may be activating an <span class="surgical">error-generating machine</span>.
+        The packaging can be spiritual, corporate, parental, romantic — the machinery stays the same: a hidden metric that produces inadequacy.
+      </p>
+      <p>
+        These words function like incantations because we rarely see the mechanism. Errorfect is the interruption that makes it visible.
+      </p>
+      <p>
+        This isn’t about “using the words incorrectly.” Often the word is the incorrectness: a mechanism pretending to be a description.
+      </p>
+    </div>
+
+    <div class="key-insight">
+      See the word without the mask; reclaim the steering wheel.
+    </div>
+  </section>
+
+  <section>
+    <h2>The Inversion</h2>
+    <div class="field-notes">
+      <p>
+        Once you can see the mechanism, you can use the method in reverse: build names whose surface and substrate agree —
+        where stripping doesn’t expose shame; it exposes the same intent, more plainly.
+      </p>
+    </div>
+
+    <div class="key-insight">
+      If stripping the name reveals hope instead of harm,<br />
+      the mask loses its leverage — both versions remain true.
+    </div>
+
+    <div class="reveal-grid">
+      <div class="reveal-card">
+        <h3 style="color: #ff006e; margin-bottom: 1.5rem;">The Given Name</h3>
+        <div class="word-reveal">
+          <span class="masked-letter">B</span>riar
+          <span class="masked-letter">M</span>organ
+          <span class="masked-letter">G</span>reenway
+        </div>
+        <div class="revealed-word">
+          <span class="arrow">→</span> Riar Organ Reenway
+        </div>
+        <div class="mechanism">
+          Beautiful surface; hidden mechanism: <strong>wreckage, biological function, endless cycles</strong>.
+        </div>
+      </div>
+
+      <div class="reveal-card">
+        <h3 style="color: #00f5ff; margin-bottom: 1.5rem;">The Chosen Name</h3>
+        <div class="word-reveal">
+          <span style="color: #00f5ff;">A</span>xel
+          <span style="color: #00f5ff;">T</span>win
+          <span style="color: #00f5ff;">A</span>worth
+        </div>
+        <div class="revealed-word">
+          <span class="arrow">→</span> xel win worth
+        </div>
+        <div class="mechanism">
+          Intentional surface; hidden mechanism: <strong>excel, victory, worth</strong>.
+        </div>
+      </div>
+    </div>
+
+    <div class="field-notes">
+      <p><strong>Axel</strong> works whether you say it or strip it — you get “excel” either way; the first letter becomes cosmetic, not camouflage.</p>
+      <p><strong>Twin → win</strong>: doubling collapses into outcome.</p>
+      <p><strong>Aworth → worth</strong>: the substrate is intrinsic.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Errorfect © 2026 | A linguistic autopsy</p>
+    <p style="margin-top: 1rem; font-size: 0.9rem;">Disruption reveals attachment; attachment reveals mechanism.</p>
+  </footer>
+
+  <script>
+    // Randomized Errorfect logo background (changes every page load)
+    (function setRandomBackground() {
+      const backgrounds = [
+        "FAFDF64A-78C7-43CF-9C14-6D71D5466B60.png",
+        "12E9D59D-4ECC-4634-9538-5DEDBB231E70.png",
+        "2C085A63-6E1D-4681-8980-BE6E655BCA72.png",
+        "4BBC46C5-FFD6-4E6C-B16E-789F6FF285EF.png",
+        "657AF014-74E0-491A-9E68-36A7601AF066.png",
+        "820F6A31-9A5C-4710-A6BD-1FDF95DCF802.png",
+        "9F69218D-CA43-4CE4-B3A0-D1F06DBC43D1.png"
+      ];
+
+      const pick = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+      const layer = document.getElementById("bgLayer");
+      if (!layer) return;
+
+      const img = new Image();
+      img.onload = () => { layer.style.backgroundImage = `url("${pick}")`; };
+      img.onerror = () => {
+        console.warn("Background failed to load:", pick);
+        layer.style.backgroundImage = "none";
+      };
+      img.src = pick;
+    })();
+
+    // Subtle glitch effect on scroll
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const glitch = document.querySelector('.glitch');
+      if (!glitch) return;
+      if (scrolled > 100) {
+        glitch.style.textShadow = `${Math.random() * 5}px ${Math.random() * 5}px 20px rgba(255, 0, 110, 0.5)`;
+      }
+    });
+
+    // Reveal animation on scroll
+    const observerOptions = { threshold: 0.2, rootMargin: '0px 0px -100px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal-card, .field-notes, .key-insight, .protocol-step').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'all 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>      text-decoration: line-through;
       display: inline-block;
       margin-right: 1rem;
     }

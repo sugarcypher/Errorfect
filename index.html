@@ -324,12 +324,153 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* "Use this as a tool": top button + product chooser */
+    .topbar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 3;
+      display: flex;
+      justify-content: flex-end;
+      padding: 1.25rem 1.5rem;
+    }
+    .tool-btn {
+      font-family: "Courier New", monospace;
+      font-size: 0.95rem;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      color: #00f5ff;
+      background: rgba(10, 10, 10, 0.6);
+      border: 1px solid #00f5ff88;
+      border-radius: 8px;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(0, 245, 255, 0.2);
+      backdrop-filter: blur(2px);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .tool-btn:hover, .tool-btn:focus-visible {
+      transform: translateY(-2px);
+      border-color: #ff006e;
+      box-shadow: 0 0 30px rgba(255, 0, 110, 0.35);
+      outline: none;
+    }
+    @media (max-width: 768px) { .topbar { justify-content: center; padding: 1rem; } }
+
+    dialog.chooser {
+      margin: auto;
+      width: min(1040px, calc(100% - 2rem));
+      max-height: calc(100vh - 2rem);
+      overflow: auto;
+      background: linear-gradient(135deg, rgba(14,20,40,0.98) 0%, rgba(12,30,58,0.98) 100%);
+      color: #e0e0e0;
+      border: 1px solid #ff006e55;
+      border-radius: 10px;
+      padding: 2.5rem 2rem 2rem;
+      font-family: "Courier New", monospace;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+    dialog.chooser::backdrop { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(3px); }
+    .chooser h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 1.5rem; }
+    .chooser .intro { color: #8892b0; font-size: 1.05rem; max-width: 760px; }
+    .chooser .close {
+      position: absolute; top: 0.9rem; right: 1rem;
+      background: none; border: 0; color: #8892b0; font-size: 1.8rem; line-height: 1; cursor: pointer; font-family: inherit;
+    }
+    .chooser .close:hover, .chooser .close:focus-visible { color: #ff006e; outline: none; }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .option {
+      display: flex;
+      flex-direction: column;
+      background: rgba(22,33,62,0.92);
+      border: 1px solid #ff006e33;
+      border-radius: 8px;
+      padding: 1.75rem;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .option:hover { border-color: #ff006e; box-shadow: 0 10px 30px rgba(255, 0, 110, 0.15); }
+    .option h3 { color: #00f5ff; font-size: 1.5rem; letter-spacing: 0.02em; }
+    .option .for { color: #ccd6f6; margin: 0.35rem 0 1.25rem; }
+    .option dl { display: grid; gap: 0.9rem; margin-bottom: 1.5rem; }
+    .option dt { color: #ff006e; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; }
+    .option dd { color: #ccd6f6; font-size: 0.98rem; line-height: 1.65; }
+    .option dd ul { list-style: none; display: grid; gap: 0.3rem; }
+    .option dd li::before { content: "› "; color: #00f5ff; }
+    .option .foot { margin-top: auto; }
+    .option .price { font-size: 1.9rem; font-weight: bold; color: #00f5ff; }
+    .option .price small { font-size: 0.9rem; color: #8892b0; font-weight: normal; margin-left: 0.4rem; }
+    .option .cta-btn { margin: 0.9rem 0 0; font-size: 1.05rem; padding: 0.85rem 1.8rem; text-align: center; width: 100%; }
+    .chooser .note { color: #8892b0; font-size: 0.9rem; margin-top: 1.75rem; text-align: center; }
   </style>
 </head>
 
 <body>
   <div class="bg-layer" id="bgLayer"></div>
   <div class="bg-overlay"></div>
+
+  <div class="topbar">
+    <button type="button" class="tool-btn" id="toolBtn" aria-haspopup="dialog" aria-controls="toolChooser">Use this as a tool</button>
+  </div>
+
+  <dialog class="chooser" id="toolChooser" aria-labelledby="chooserTitle">
+    <button type="button" class="close" id="chooserClose" aria-label="Close">×</button>
+    <h2 id="chooserTitle">Use Errorfect as a tool</h2>
+    <p class="intro">Two ways to apply Errorfect. One looks closely at a single word. The other looks across a text, or many texts, at how the language moves a reader.</p>
+
+    <div class="options">
+      <article class="option">
+        <h3>Word Autopsy</h3>
+        <p class="for">For one word you'd like to look at closely.</p>
+        <dl>
+          <div><dt>You send</dt><dd>One word, and optionally where it comes up.</dd></div>
+          <div><dt>You receive</dt><dd>A one-page PDF by email within 48 hours:
+            <ul>
+              <li>the A–D protocol, run until something useful shows</li>
+              <li>the standard the word carries</li>
+              <li>any coercive operator inside it</li>
+              <li>alternative wording that keeps what's true in it</li>
+              <li>a consent checkpoint: three questions for deciding whether to keep it</li>
+            </ul>
+          </dd></div>
+          <div><dt>Useful for</dt><dd>A word that recurs in your thinking, writing or conversations, when you want a careful written reading of it.</dd></div>
+        </dl>
+        <div class="foot">
+          <div class="price">$39<small>one-time</small></div>
+          <a class="cta-btn" href="https://buy.stripe.com/cNi9AT5AJe8DaQt5nCcEw0e">Choose Word Autopsy</a>
+        </div>
+      </article>
+
+      <article class="option">
+        <h3>Undertow</h3>
+        <p class="for">For texts and bodies of work.</p>
+        <dl>
+          <div><dt>You provide</dt><dd>Any text (an ad, a speech, a memo, a thread, a chapter) or many documents at once.</dd></div>
+          <div><dt>You receive</dt><dd>An interactive analysis in your browser, as soon as you scan:
+            <ul>
+              <li>each mechanism marked in the sentence where it occurs</li>
+              <li>which belief, action or way of thinking it pushes toward</li>
+              <li>where mechanisms cluster, and shared patterns across documents</li>
+              <li>hidden characters and embedded instructions</li>
+              <li>deep reads with Claude, up to 10 a day</li>
+              <li>reports in Markdown and JSON</li>
+            </ul>
+          </dd></div>
+          <div><dt>Useful for</dt><dd>Checking material before you rely on it, share it or respond to it, and comparing many documents for common techniques.</dd></div>
+        </dl>
+        <div class="foot">
+          <div class="price">$39<small>one-time · ongoing access</small></div>
+          <a class="cta-btn" href="https://sugarcypher.github.io/errorfect-undertow/">Choose Undertow</a>
+        </div>
+      </article>
+    </div>
+
+    <p class="note">Both are one-time payments through Stripe. Errorfect reads language, not people: results describe how words work, not what anyone intended.</p>
+  </dialog>
 
   <div class="hero">
     <div class="glitch-container">
@@ -603,14 +744,14 @@
     <h2>Get Your Word Autopsied</h2>
     <div class="field-notes">
       <p>
-        One word has been steering you — <span class="surgical">perfect</span>, <span class="surgical">lazy</span>,
-        <span class="surgical">enough</span>, <span class="surgical">should</span>, or one only you know.
-        Submit it. Within 48 hours you receive a one-page surgical breakdown:
+        Choose a word you'd like examined: <span class="surgical">perfect</span>, <span class="surgical">lazy</span>,
+        <span class="surgical">enough</span>, <span class="surgical">should</span>, or any other.
+        Within 48 hours you receive a one-page surgical breakdown:
       </p>
       <p>
-        The A–D protocol run to first revelation · the hidden standard the word enforces · the coercive
-        operator inside it (if present) · replacement language that keeps the truth and drops the trap ·
-        a consent checkpoint so the choice returns to you.
+        The A–D protocol run to first revelation · the standard the word carries · any coercive
+        operator inside it · alternative wording that keeps what's true in it ·
+        a consent checkpoint for deciding whether to keep it.
       </p>
       <div style="text-align:center; margin-top:2rem;">
         <a class="cta-btn" href="https://buy.stripe.com/cNi9AT5AJe8DaQt5nCcEw0e">Submit a Word — $39</a>
@@ -713,6 +854,25 @@
       img.onload = () => { layer.style.backgroundImage = `url("${pick}")`; };
       img.onerror = () => { layer.style.backgroundImage = "none"; };
       img.src = pick;
+    })();
+
+    // "Use this as a tool" chooser
+    (function initChooser() {
+      var btn = document.getElementById('toolBtn');
+      var dlg = document.getElementById('toolChooser');
+      if (!btn || !dlg || typeof dlg.showModal !== 'function') {
+        if (btn) btn.addEventListener('click', function () { location.href = '#autopsy-offer'; });
+        return;
+      }
+      btn.addEventListener('click', function () { dlg.showModal(); });
+      document.getElementById('chooserClose').addEventListener('click', function () { dlg.close(); });
+      dlg.addEventListener('click', function (e) { // close on backdrop clicks only
+        if (e.target !== dlg) return;
+        var r = dlg.getBoundingClientRect();
+        if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+      });
+      dlg.addEventListener('close', function () { btn.focus(); });
+      if (location.hash === '#tools') dlg.showModal();
     })();
 
     // Subtle glitch effect on scroll
